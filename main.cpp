@@ -63,6 +63,60 @@ void help_command()
   cout << "w -> what line will execute next?" << endl;
 }
 
+void pg_command(STMT* p){
+  programgraph_print(p);
+}
+
+void sm_command(RAM* r){
+  ram_print(r);
+}
+
+void b_command(set<int>& breakpoints){
+  int breakpoint;
+  cin >> breakpoint;
+
+  if(breakpoints.contains(breakpoint)){
+    cout << "breakpoint exists" << endl;
+  }
+  else{
+    breakpoints.insert(breakpoint);
+    cout << "breakpoint set" << endl;
+  }
+}
+
+void rb_command(set<int>& breakpoints){
+  int breakpoint;
+  cin >> breakpoint;
+  if(!breakpoints.contains(breakpoint)){
+    cout << "no such breakpoint" << endl;
+  }
+  else{
+    breakpoints.erase(breakpoint);
+    cout << "breakpoint removed" << endl;
+  }
+}
+
+void cb_command(set<int>& breakpoints){
+  breakpoints.clear();
+  cout << "all breakpoints removed" << endl;
+}
+
+void lb_command(set<int>& breakpoints){
+  cout << "breakpoints: ";
+  if(breakpoints.empty()){
+    cout << "none" << endl;;
+  }
+  else{
+    for (int b : breakpoints){
+      cout << b;
+      if(b != *breakpoints.rbegin()){
+        cout << ", ";
+      }
+    }
+    cout << endl;
+  }
+}
+
 
 /**
   * @brief main
@@ -137,53 +191,23 @@ int main(int argc, char* argv[])
       help_command();
     }
     else if(cmd == "pg"){
-      programgraph_print(program);
+      pg_command(program);
 
     }
     else if(cmd == "sm"){
-      ram_print(memory);
+      sm_command(memory);
     }
     else if(cmd == "b"){
-      int breakpoint;
-      cin >> breakpoint;
-
-      if(breakpoints.contains(breakpoint)){
-        cout << "breakpoint exists" << endl;
-      }
-      else{
-        breakpoints.insert(breakpoint);
-        cout << "breakpoint set" << endl;
-      }
+      b_command(breakpoints);
     }
     else if(cmd == "rb"){
-      int breakpoint;
-      cin >> breakpoint;
-      if(!breakpoints.contains(breakpoint)){
-        cout << "no such breakpoint" << endl;
-      }
-      else{
-        breakpoints.erase(breakpoint);
-        cout << "breakpoint removed" << endl;
-      }
+      rb_command(breakpoints);
     }
     else if(cmd == "cb"){
-      breakpoints.clear();
-      cout << "all breakpoints removed" << endl;
+      cb_command(breakpoints);
     }
     else if(cmd == "lb"){
-      cout << "breakpoints: ";
-      if(breakpoints.empty()){
-        cout << "none" << endl;;
-      }
-      else{
-        for (int b : breakpoints){
-          cout << b;
-          if(b != *breakpoints.rbegin()){
-            cout << ", ";
-          }
-        }
-        cout << endl;
-      }
+      lb_command(breakpoints);
     }
     else {
       cout << "unknown command" << endl;
