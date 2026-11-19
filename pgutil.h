@@ -6,9 +6,9 @@
   * @note SOLUTION
   *
   * @author original template by Prof. Joe Hummel
-  * @author ?
-  * @author ?
-  * @author ?  
+  * @author Aimee Darlene Izere
+  * @author Lauren Jene
+  * @author Angelina Feng 
   * @note Northwestern University
   */
 

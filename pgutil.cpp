@@ -6,9 +6,9 @@
   * @note SOLUTION
   *
   * @author original template by Prof. Joe Hummel
-  * @author ?
-  * @author ?
-  * @author ?  
+  * @author Aimee Darlene Izere
+  * @author Lauren Jene
+  * @author Angelina Feng  
   * @note Northwestern University
   */
 
@@ -48,10 +48,45 @@ struct PG_LINKS break_pg(struct STMT* cur)
   //
   // TODO:
   //
+  if (cur->stmt_type == STMT_ASSIGNMENT)
+  {
+    links.next = cur->types.assignment->next_stmt;
+    cur->types.assignment->next_stmt = nullptr;
+  }
+  else if (cur->stmt_type == STMT_FUNCTION_CALL)
+  {
+    links.next = cur->types.function_call->next_stmt;
+    cur->types.function_call->next_stmt = nullptr;
+  }
+    
+  else if (cur->stmt_type == STMT_PASS)
+  {
+    links.next = cur->types.pass->next_stmt;
+    cur->types.pass->next_stmt = nullptr;
+  }
+  
+  else if (cur->stmt_type == STMT_IF_THEN_ELSE)
+  {
+    links.true_path = cur->types.if_then_else->true_path;
+    links.false_path = cur->types.if_then_else->false_path;
+    links.next = cur->types.if_then_else->next_stmt;
+
+    cur->types.if_then_else->true_path = nullptr;
+    cur->types.if_then_else->false_path = nullptr;
+    cur->types.if_then_else->next_stmt = nullptr;
+  }
+
+  else if (cur->stmt_type ==  STMT_WHILE_LOOP)
+  {
+    links.loop_body = cur->types.while_loop->loop_body;
+    links.next = cur->types.while_loop->next_stmt;
+
+    cur->types.while_loop->loop_body = nullptr;
+    cur->types.while_loop->next_stmt = nullptr;
+  }
   
   return links;
 }
-
 
 /**
  * @brief repairs the program graph at the given stmt
@@ -76,7 +111,34 @@ void repair_pg(struct STMT* cur, struct PG_LINKS links)
   //
   // TODO:
   //
-  
+  if (cur->stmt_type == STMT_ASSIGNMENT)
+  {
+    cur->types.assignment->next_stmt = links.next;
+  }
+
+  else if (cur->stmt_type == STMT_FUNCTION_CALL)
+  {
+    cur->types.function_call->next_stmt = links.next;
+  }
+
+  else if (cur->stmt_type == STMT_PASS)
+  {
+    cur->types.pass->next_stmt = links.next;
+  }
+
+  else if (cur->stmt_type == STMT_IF_THEN_ELSE)
+  {
+    cur->types.if_then_else->true_path = links.true_path;
+    cur->types.if_then_else->false_path = links.false_path;
+    cur->types.if_then_else->next_stmt = links.next;
+  }
+
+  else if (cur->stmt_type == STMT_WHILE_LOOP)
+  {
+    cur->types.while_loop->loop_body = links.loop_body;
+    cur->types.while_loop->next_stmt = links.next;
+  }
+
   return;
 }
 
