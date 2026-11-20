@@ -172,18 +172,12 @@ struct STMT* step_execute(struct STMT* cur,
     return cur;
   }
 
-  // if the user inputs "s" again, you now execute the current statement and move past the breakpoint.
-  if (breakpoint_hit)
-  {breakpoint_hit = false; }
-
   // 1. Break the program graph
   struct PG_LINKS broken_links = break_pg(cur);
 
   // 2. consume any lingering keyboard input by calling std::getline( )
   // , just in case the current stmt is a call to input( )
-  string keyboard_input ;
-  getline(cin,keyboard_input);
-
+  
   //3. Execute
   // If execution fail, output error and leave the stmt as it is 
   // Execute does all of that
@@ -248,6 +242,12 @@ struct STMT* step_execute(struct STMT* cur,
   }
  // 4. Repair and free memory
   repair_pg(cur,broken_links);
+
+
+  // if the user inputs "s" again, you now execute the current statement and move past the breakpoint.
+  if (next_stmt != cur)
+  {breakpoint_hit = false; }
+
   if (next_stmt == nullptr)
     {
       program_complete = true;
@@ -262,6 +262,7 @@ void r_command(struct STMT*& cur, struct RAM* mem, bool& program_complete,
                 bool& breakpoint_hit, set<int>& breakpoints){
   if(cur == nullptr){
     cout << "execution has completed" << endl;
+    return;
   }
 
   while (true){
@@ -389,6 +390,9 @@ int main(int argc, char* argv[])
     // "s" command  -- s: step through and execute
     else if(cmd == "s")
     {
+      string keyboard_input ;
+      getline(cin,keyboard_input);
+
       cur = step_execute(cur, 
                         memory, 
                         program_complete, 
@@ -397,6 +401,8 @@ int main(int argc, char* argv[])
     }
 
     else if(cmd == "r"){
+      string keyboard_input ;
+      getline(cin,keyboard_input);
       r_command(cur, memory, program_complete, breakpoint_hit, breakpoints);
     }
 
